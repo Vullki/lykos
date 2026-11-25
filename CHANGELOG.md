@@ -1,10 +1,12 @@
 # Changelog
 
-All notable changes to Lykos are recorded here, newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The app version is `MARKETING_VERSION` in `project.yml`; the build number is the GitHub Actions run number. Builds 1 to 10 ran in the private development repo, so their run IDs and commit hashes refer to that history and aren't linked.
+All notable changes to Lykos are recorded here, newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The app version is `MARKETING_VERSION` in `project.yml`; the build number is the GitHub Actions run number. Since 2026-11-25 there are twin repos with the same history: the public [`Vullki/lykos`](https://github.com/Vullki/lykos) (unsigned builds and Releases) and a private one that signs builds for the owner's phone. Each counts its own runs, so the same commit can carry different build numbers in each. Builds 1 to 13 below ran in the private repo (its pre-public history is kept there), so their run IDs and older commit hashes aren't linked; public builds are marked "public".
 
 ## [0.1.0] — 2026-11-25 — first public release
 
-The first public release: the open-source repo, a GitHub Release with an unsigned IPA, a TrollStore `.tipa` and an AltStore / SideStore source. Same app as builds 6 to 8, now also for iOS 15 and 16.
+The first public release, published 2026-11-25 at 03:25 (Bahrain): **[Lykos v0.1.0](https://github.com/Vullki/lykos/releases/tag/v0.1.0)**, from the open-source repo [`Vullki/lykos`](https://github.com/Vullki/lykos). The Release holds `Lykos-v0.1.0-unsigned.ipa` and `Lykos-v0.1.0.tipa` (the same build, 1,252,619 bytes, minimum iOS 15.0) and `altstore-source.json`. Same app as builds 6 to 8, now also for iOS 15 and 16.
+
+Checked after publishing: the AltStore source loads from `releases/latest/download/altstore-source.json`, its download link serves the IPA with a matching SHA-256, and the four screenshots and the icon load from the `v0.1.0` tag. Not yet tried on a device: adding the source in AltStore or SideStore, a TrollStore install, and running on iOS 15 or 16.
 
 ### Builds
 
@@ -15,6 +17,11 @@ The first public release: the open-source repo, a GitHub Release with an unsigne
 | 8 | 45513382049 | `6651bc9` | Open-source prep merged to `main`. Unsigned and signed green |
 | 9 | 45515682618 | `4bd6232` | Minimum iOS lowered to 15: the compiler stopped on seven iOS 16-only calls in the debug log screen. Failed, as intended for this check |
 | 10 | 45515929585 | `cef33a4` | Debug log screen with iOS 15 fallbacks. Unsigned and signed green, no warnings; the IPA reports `MinimumOSVersion 15.0` and bundle ID `com.vullki.lykos`. Not installed on the phone |
+| 11 | 45516237150 | `ae72121` | Release prep (`.tipa`, AltStore source, screenshots) merged to `main`. Unsigned and signed green |
+| public 1 | [45517237468](https://github.com/Vullki/lykos/actions/runs/45517237468) | `5872799` | First build of the public repo, from its single clean root commit. Unsigned green; signed skipped (no secrets there, as intended) |
+| 12 | 45517398592 | `5872799` | Private twin after the rename, run by hand to prove signing still works. Unsigned and signed green |
+| public 2 | [45517771273](https://github.com/Vullki/lykos/actions/runs/45517771273) | `e987670` | Tag `v0.1.0`: built the unsigned IPA and published the Release (IPA, `.tipa`, AltStore source) |
+| 13 | 45517774205 | `e987670` | Tag `v0.1.0` on the private twin: signed IPA green, release job skipped, so there is only one Release |
 
 ### Added — open source
 
@@ -29,6 +36,8 @@ The first public release: the open-source repo, a GitHub Release with an unsigne
 
 ### Changed
 
+- **Twin repos (2026-11-25).** The development repo became the private `Vullki/lykos-private`: it keeps the four signing secrets and the full pre-public history on branch `archive/pre-public`. The public `Vullki/lykos` starts from one clean commit (`5872799`) with the same 66 files, checked for personal details first. Both share the same `main`, and one `git push` updates both. The public repo never holds secrets, because anyone can download its workflow artifacts and a signed IPA carries the owner's profile.
+- The launch-screen screenshot added to the README and the AltStore source (`e987670`).
 - Project Idea, Project Plan and `CLAUDE.md` reworded for a public repo: no more "personal use only, never distributed", no owner's legal name or Apple Team ID, and the design system is referenced without a local path.
 - **New app icon (2026-11-25): "LY" in brushed steel**, DARK's design, chosen over three vector candidates he also made. A bold italic L and Y in real brushed-steel grain, the L's top sweeping up into the Y's left arm, on a dark grained background. It replaces the satin-silver "Ly" (kept in `design/icon/archive-ly-v1/`). Any = his 1024 artwork as is (a full square; iOS applies the rounded mask); Dark and Tinted = the letters cut out onto transparency; `LykosMark` (launch and offline screens) = the same cut-out letters. Source (`design/icon/final/lykos-source.webp`) and the cut-out scripts (`design/icon/tools/`) are in the repo.
 - Checked on the phone (2026-11-25): in dark mode iOS shows the Dark variant on its own dark glass tile, with clean edges, and the letters read clearly at home-screen size. Kept at its current size inside the tile (a ~10% larger mark was offered and declined).
