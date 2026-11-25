@@ -128,7 +128,7 @@ docs/screenshots/    README and AltStore screenshots
 
 ## Status
 
-Version 0.1.0. The shell and the cloud build are done and in daily use on an iPhone 17 running the iOS 27 beta. Not every feature has had a full device test yet: voice, uploads from the camera and Files, and offline Retry are still on the checklist. It builds for iOS 15 and later, but iOS 15 to 26 and TrollStore installs haven't been tried on a real device yet, and neither have other iPhone models. Issues and pull requests are welcome.
+Version 0.1.1. The shell and the cloud build are done and in daily use on an iPhone 17 running the iOS 27 beta. Not every feature has had a full device test yet: voice, uploads from the camera and Files, and offline Retry are still on the checklist. It builds for iOS 15 and later, but iOS 15 to 26 and TrollStore installs haven't been tried on a real device yet, and neither have other iPhone models. Issues and pull requests are welcome.
 
 ## Security
 

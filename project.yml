@@ -19,7 +19,7 @@ settings:
     # ID here, or CI passes LYKOS_BUNDLE_ID from the repo variable of the same name.
     # Phase 3 extensions derive theirs from it: $(LYKOS_BUNDLE_ID).share and .widget.
     LYKOS_BUNDLE_ID: com.vullki.lykos
-    MARKETING_VERSION: "0.1.0"
+    MARKETING_VERSION: "0.1.1"
     CURRENT_PROJECT_VERSION: "1"   # CI overrides this with github.run_number
     SWIFT_VERSION: "5.0"
     ENABLE_USER_SCRIPT_SANDBOXING: YES

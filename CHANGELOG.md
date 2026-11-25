@@ -2,12 +2,23 @@
 
 All notable changes to Lykos are recorded here, newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The app version is `MARKETING_VERSION` in `project.yml`; the build number is the GitHub Actions run number. Since 2026-11-25 there are twin repos with the same history: the public [`Vullki/lykos`](https://github.com/Vullki/lykos) (unsigned builds and Releases) and a private one that signs builds for the owner's phone. Each counts its own runs, so the same commit can carry different build numbers in each. Builds 1 to 13 below ran in the private repo (its pre-public history is kept there), so their run IDs and older commit hashes aren't linked; public builds are marked "public".
 
-## [Unreleased]
+## [0.1.1] — 2026-11-25
+
+Two fixes found the morning after the first release. Build 15 (signed) was installed over build 6 on the iPhone 17 at 11:34 (Bahrain), still signed in, and both fixes were confirmed there.
+
+### Builds
+
+| Build | Run | Commit | What it was |
+| --- | --- | --- | --- |
+| 14 | 45572756752 | [`78173d2`](https://github.com/Vullki/lykos/commit/78173d2) | Launch-picture fix. Unsigned and signed green. Not installed |
+| public 3 | [45572751620](https://github.com/Vullki/lykos/actions/runs/45572751620) | [`78173d2`](https://github.com/Vullki/lykos/commit/78173d2) | Same commit in the public repo. Unsigned green |
+| 15 | 45576559615 | [`c4796d2`](https://github.com/Vullki/lykos/commit/c4796d2) | Code-tab mic fix. Unsigned and signed green, no warnings. Installed on the iPhone 17: both fixes confirmed |
+| public 4 | [45576554171](https://github.com/Vullki/lykos/actions/runs/45576554171) | [`c4796d2`](https://github.com/Vullki/lykos/commit/c4796d2) | Same commit in the public repo. Unsigned green |
 
 ### Fixed
 
-- Opening the app showed the old "Ly" for about two seconds, then faded to the new "LY". The old one was iOS's cached picture of the launch screen (`Library/SplashBoard`), kept from before the build 6 icon change; the app itself only carries the new mark. Lykos now deletes that cache once per new build, so iOS redraws it from the current build on the next launch. The first launch after installing still shows whatever iOS had cached; every launch after that shows only the new "LY". The debug log notes when it happened.
-- Claude's own mic ("Press and hold to record") was missing in the Code tab with the phone upright and only came back in landscape. Safari does the same: claude.ai turns Code dictation off on a touch screen narrower than 600 points, through one `matchMedia("(max-width: 599px)")` check (the only use of that query in claude.ai's scripts, checked 2026-11-25). Lykos now answers that one check as "wide" with a small script at page start, so the Code tab shows Claude's mic upright, using Anthropic's transcription rather than the iOS keyboard's. Every other media query and all CSS stay as they are, so the layout is still the phone layout. Not yet tested on the iPhone.
+- **The old "Ly" flashed on launch.** Opening the app played the old "Ly" for about two seconds, then faded to the new "LY". The old one was iOS's cached picture of the launch screen (`Library/SplashBoard`), kept from before the build 6 icon change; the app itself only carried the new mark. Lykos now deletes that cache once per new build, so iOS redraws it from the current build. The first launch after installing a new build can still show whatever iOS had cached; every launch after that shows only the new "LY". The debug log notes when it happened. Confirmed on the iPhone: opens straight to the new "LY".
+- **No Claude mic in the Code tab with the phone upright.** Claude's own mic ("Press and hold to record") only appeared in landscape. Safari does the same: claude.ai turns Code dictation off on a touch screen narrower than 600 points, through one `matchMedia("(max-width: 599px)")` check (the only use of that query in claude.ai's scripts, checked 2026-11-25). Lykos now answers that one check as "wide" with a small script at page start (`CodeDictation.swift`), so the Code tab shows Claude's own mic upright, with Anthropic's transcription rather than the iOS keyboard's. Every other media query and all CSS stay as they are, so the layout is still the phone layout. If claude.ai renames the query, the script stops matching and the app behaves like Safari again. Confirmed on the iPhone: the mic sits in the Code composer upright. A full dictation run through it hasn't been done yet.
 
 ## [0.1.0] — 2026-11-25 — first public release
 
