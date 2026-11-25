@@ -38,6 +38,8 @@ struct ClaudeWebView: UIViewRepresentable {
             injectionTime: .atDocumentStart,
             forMainFrameOnly: true
         ))
+        // Claude's own mic in the Code tab with the phone upright (see CodeDictation).
+        contentController.addUserScript(CodeDictation.userScript)
         contentController.add(ConsoleMessageHandler(), name: ConsoleMessageHandler.name)
         configuration.userContentController = contentController
 

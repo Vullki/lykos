@@ -7,6 +7,7 @@ All notable changes to Lykos are recorded here, newest first. The format follows
 ### Fixed
 
 - Opening the app showed the old "Ly" for about two seconds, then faded to the new "LY". The old one was iOS's cached picture of the launch screen (`Library/SplashBoard`), kept from before the build 6 icon change; the app itself only carries the new mark. Lykos now deletes that cache once per new build, so iOS redraws it from the current build on the next launch. The first launch after installing still shows whatever iOS had cached; every launch after that shows only the new "LY". The debug log notes when it happened.
+- Claude's own mic ("Press and hold to record") was missing in the Code tab with the phone upright and only came back in landscape. Safari does the same: claude.ai turns Code dictation off on a touch screen narrower than 600 points, through one `matchMedia("(max-width: 599px)")` check (the only use of that query in claude.ai's scripts, checked 2026-11-25). Lykos now answers that one check as "wide" with a small script at page start, so the Code tab shows Claude's mic upright, using Anthropic's transcription rather than the iOS keyboard's. Every other media query and all CSS stay as they are, so the layout is still the phone layout. Not yet tested on the iPhone.
 
 ## [0.1.0] — 2026-11-25 — first public release
 
