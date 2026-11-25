@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "lykos-design",
+      "runtimeExecutable": "py",
+      "runtimeArgs": ["-m", "http.server", "5181", "--bind", "127.0.0.1", "--directory", "design/icon"],
+      "port": 5181
+    }
+  ]
+}

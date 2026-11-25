@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lykos Icon Concepts</title>
+<style>
+  :root { --bg:#000; --surface:#0D0D0D; --body:#E6E4DF; --label:#C2C2C2; --muted:rgba(230,228,223,.6); }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: var(--bg); color: var(--body); font: 15px/1.5 -apple-system, "Segoe UI", system-ui, sans-serif; padding: 32px 24px 48px; }
+  h1 { font-weight: 300; font-size: 28px; letter-spacing: .02em; }
+  .tag { color: var(--label); text-transform: uppercase; letter-spacing: .3em; font-size: 11px; margin-bottom: 6px; }
+  .sub { color: var(--muted); margin: 6px 0 28px; }
+  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+  .card { background: var(--surface); border: 1px solid rgba(255,255,255,.08); border-radius: 18px; padding: 20px; }
+  .card h2 { font-weight: 400; font-size: 18px; margin: 2px 0 14px; }
+  .big { width: 100%; aspect-ratio: 1; border-radius: 22.37%; display: block; }
+  .row { display: flex; align-items: center; gap: 14px; margin-top: 16px; padding: 14px; border-radius: 14px; }
+  .row.dark { background: linear-gradient(135deg,#1d1d22,#0b0b0e); }
+  .row.light { background: linear-gradient(135deg,#e9e7e2,#bfc3c8); }
+  .row img { border-radius: 22.37%; }
+  .s60 { width: 60px; } .s40 { width: 40px; } .s29 { width: 29px; }
+  .tint { filter: grayscale(1) brightness(1.15) sepia(.35) hue-rotate(170deg) saturate(1.4); }
+  .cap { font-size: 12px; color: var(--muted); }
+  .row.light .cap { color: #3a3a3a; }
+  .note { color: var(--muted); font-size: 13px; margin-top: 12px; }
+</style>
+</head>
+<body>
+  <div class="tag">Lykos · Brushed Silver Noir</div>
+  <h1>Icon concepts</h1>
+  <p class="sub">Each concept at full size, then at Home Screen (60), Spotlight (40) and Settings (29) sizes, on a dark and a light wallpaper, plus a tinted preview.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="tag">A</div><h2>Λ Monolith</h2>
+      <img class="big" src="concept-a.svg" alt="">
+      <div class="row dark"><img class="s60" src="concept-a.svg" alt=""><img class="s40" src="concept-a.svg" alt=""><img class="s29" src="concept-a.svg" alt=""><span class="cap">dark</span></div>
+      <div class="row light"><img class="s60" src="concept-a.svg" alt=""><img class="s60 tint" src="concept-a.svg" alt=""><span class="cap">light · tinted</span></div>
+      <p class="note">The Λ of ΛΥΚΟΣ, the same Λ that runs through DΛЯK and CΛPSTΛN.</p>
+    </div>
+    <div class="card">
+      <div class="tag">B</div><h2>Wolf Bubble</h2>
+      <img class="big" src="concept-b.svg" alt="">
+      <div class="row dark"><img class="s60" src="concept-b.svg" alt=""><img class="s40" src="concept-b.svg" alt=""><img class="s29" src="concept-b.svg" alt=""><span class="cap">dark</span></div>
+      <div class="row light"><img class="s60" src="concept-b.svg" alt=""><img class="s60 tint" src="concept-b.svg" alt=""><span class="cap">light · tinted</span></div>
+      <p class="note">A chat bubble with wolf ears: says "chat app called wolf" in one shape.</p>
+    </div>
+    <div class="card">
+      <div class="tag">C</div><h2>Faceted Wolf</h2>
+      <img class="big" src="concept-c.svg" alt="">
+      <div class="row dark"><img class="s60" src="concept-c.svg" alt=""><img class="s40" src="concept-c.svg" alt=""><img class="s29" src="concept-c.svg" alt=""><span class="cap">dark</span></div>
+      <div class="row light"><img class="s60" src="concept-c.svg" alt=""><img class="s60 tint" src="concept-c.svg" alt=""><span class="cap">light · tinted</span></div>
+      <p class="note">A machined wolf head, no eyes. The most literal wolf of the three.</p>
+    </div>
+  </div>
+</body>
+</html>

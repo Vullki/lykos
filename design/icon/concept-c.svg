@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Concept C: Faceted Wolf. A front-facing wolf head machined from brushed-silver facets, no eyes, lit from the top left. -->
+  <defs>
+    <radialGradient id="bg" cx="512" cy="420" r="640" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0D0D0D"/>
+      <stop offset="1" stop-color="#000000"/>
+    </radialGradient>
+    <filter id="metal" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.002 0.55" numOctaves="2" seed="4" result="noise"/>
+      <feColorMatrix in="noise" type="saturate" values="0" result="mono"/>
+      <feComposite in="SourceGraphic" in2="mono" operator="arithmetic" k1="0" k2="1" k3="0.2" k4="-0.1" result="grained"/>
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="blur"/>
+      <feSpecularLighting in="blur" surfaceScale="5" specularConstant="0.7" specularExponent="24" lighting-color="#ffffff" result="spec">
+        <feDistantLight azimuth="235" elevation="50"/>
+      </feSpecularLighting>
+      <feComposite in="spec" in2="SourceAlpha" operator="in" result="specIn"/>
+      <feComposite in="grained" in2="specIn" operator="arithmetic" k1="0" k2="1" k3="0.4" k4="0" result="lit"/>
+      <feComposite in="lit" in2="SourceAlpha" operator="in"/>
+    </filter>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="38"/>
+    </filter>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+  <polygon points="300,176 430,352 512,334 594,352 724,176 738,436 802,566 678,694 512,852 346,694 222,566 286,436"
+           fill="#ffffff" opacity="0.07" filter="url(#glow)"/>
+  <g filter="url(#metal)" stroke="#000000" stroke-opacity="0.45" stroke-width="3" stroke-linejoin="round">
+    <!-- left side (lit) -->
+    <polygon points="300,176 430,352 286,436" fill="#C2C2C2"/>
+    <polygon points="512,334 430,352 512,530" fill="#DCDCDC"/>
+    <polygon points="286,436 430,352 512,530 392,560" fill="#A9A9A9"/>
+    <polygon points="286,436 392,560 222,566" fill="#8A8A8A"/>
+    <polygon points="222,566 392,560 346,694" fill="#6B6B6B"/>
+    <polygon points="392,560 512,530 512,770 346,694" fill="#B8B8B8"/>
+    <polygon points="346,694 512,770 512,852" fill="#5A5A5A"/>
+    <!-- right side (shadow) -->
+    <polygon points="724,176 594,352 738,436" fill="#9A9A9A"/>
+    <polygon points="512,334 594,352 512,530" fill="#C8C8C8"/>
+    <polygon points="738,436 594,352 512,530 632,560" fill="#8E8E8E"/>
+    <polygon points="738,436 632,560 802,566" fill="#6E6E6E"/>
+    <polygon points="802,566 632,560 678,694" fill="#555555"/>
+    <polygon points="632,560 512,530 512,770 678,694" fill="#9E9E9E"/>
+    <polygon points="678,694 512,770 512,852" fill="#464646"/>
+    <!-- inner ears -->
+    <polygon points="322,248 408,356 304,410" fill="#464646"/>
+    <polygon points="702,248 616,356 720,410" fill="#3A3A3A"/>
+    <!-- nose -->
+    <polygon points="470,770 554,770 512,814" fill="#0D0D0D"/>
+  </g>
+</svg>

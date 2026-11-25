@@ -1,0 +1,358 @@
+# Cloud build for Lykos (Phase 2). No Mac in this project: every IPA is built here.
+#
+#   unsigned (Route B): always runs. Builds with code signing off and uploads Lykos-unsigned.ipa,
+#                       to be signed locally with zsign.
+#   signed   (Route A): runs only when the four signing secrets exist. Archives with manual
+#                       signing in a temporary keychain and uploads Lykos-signed.ipa.
+#   release           : runs only for a pushed tag like v0.1.0. Attaches the unsigned IPA to a
+#                       GitHub Release, so anyone can download it and sign it with their own Apple ID.
+#
+# Runs on pushes to main that touch more than docs or design, on version tags, and on manual runs.
+# A newer push cancels an older run on the same ref.
+#
+# Forks: set the repo variable LYKOS_BUNDLE_ID (Settings > Secrets and variables > Actions >
+# Variables) to a bundle ID registered in your own Apple account. Without it, builds use
+# com.vullki.lykos, the default in project.yml.
+
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]   # path filters aren't evaluated for tag pushes, so every version tag builds
+    paths-ignore:
+      - "**/*.md"
+      - "design/**"
+      - "docs/**"
+  workflow_dispatch:
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  # Pinned on purpose (runner image macos-26, 2026-11): newest stable Xcode, iOS 26.5 SDK.
+  # Change it deliberately, never by following the runner's default.
+  XCODE_APP: /Applications/Xcode_26.6.app
+  DERIVED_DATA: build/DerivedData
+  # The app's bundle ID: the repo variable for forks, else the original build's ID.
+  LYKOS_BUNDLE_ID: ${{ vars.LYKOS_BUNDLE_ID || 'com.vullki.lykos' }}
+
+jobs:
+  unsigned:
+    name: Unsigned IPA (Route B)
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Select Xcode
+        run: |
+          if [ ! -d "$XCODE_APP" ]; then
+            echo "::error::$XCODE_APP is not on this runner. Installed:"
+            ls -d /Applications/Xcode*
+            exit 1
+          fi
+          sudo xcode-select -s "$XCODE_APP/Contents/Developer"
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: |
+          brew install xcodegen
+          xcodegen --version
+
+      - name: Generate the Xcode project
+        run: xcodegen generate
+
+      - name: Build (code signing off)
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project Lykos.xcodeproj \
+            -scheme Lykos \
+            -configuration Release \
+            -destination "generic/platform=iOS" \
+            -derivedDataPath "$DERIVED_DATA" \
+            CODE_SIGNING_ALLOWED=NO \
+            LYKOS_BUNDLE_ID="$LYKOS_BUNDLE_ID" \
+            CURRENT_PROJECT_VERSION=${{ github.run_number }}
+
+      - name: Package the IPA
+        run: scripts/package-ipa.sh "$DERIVED_DATA/Build/Products/Release-iphoneos/Lykos.app" Lykos-unsigned.ipa
+
+      - name: Check the IPA contents
+        run: |
+          listing="$(unzip -Z1 Lykos-unsigned.ipa)"
+          for entry in Payload/Lykos.app/Info.plist Payload/Lykos.app/Assets.car Payload/Lykos.app/Lykos; do
+            if ! grep -qx "$entry" <<<"$listing"; then
+              echo "::error::Missing $entry in the IPA"
+              exit 1
+            fi
+          done
+          /usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" -c "Print :CFBundleShortVersionString" -c "Print :CFBundleVersion" \
+            "$DERIVED_DATA/Build/Products/Release-iphoneos/Lykos.app/Info.plist"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: Lykos-unsigned-${{ github.run_number }}
+          path: Lykos-unsigned.ipa
+          retention-days: 7
+          if-no-files-found: error
+
+  # Checks whether the signing secrets exist, on a cheap Linux runner, so a missing secret
+  # skips the signed job instead of failing it or spending macOS minutes.
+  signing-secrets:
+    name: Signing secrets present?
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    outputs:
+      ready: ${{ steps.check.outputs.ready }}
+    steps:
+      - id: check
+        env:
+          CERT_P12_BASE64: ${{ secrets.CERT_P12_BASE64 }}
+          CERT_PASSWORD: ${{ secrets.CERT_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+          PROFILE_APP_BASE64: ${{ secrets.PROFILE_APP_BASE64 }}
+        run: |
+          missing=""
+          [ -n "$CERT_P12_BASE64" ] || missing="$missing CERT_P12_BASE64"
+          [ -n "$CERT_PASSWORD" ] || missing="$missing CERT_PASSWORD"
+          [ -n "$KEYCHAIN_PASSWORD" ] || missing="$missing KEYCHAIN_PASSWORD"
+          [ -n "$PROFILE_APP_BASE64" ] || missing="$missing PROFILE_APP_BASE64"
+          if [ -n "$missing" ]; then
+            echo "Signing secrets not set:$missing. Skipping the signed build."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  signed:
+    name: Signed IPA (Route A)
+    needs: signing-secrets
+    if: needs.signing-secrets.outputs.ready == 'true'
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set paths
+        run: |
+          {
+            echo "KEYCHAIN_PATH=$RUNNER_TEMP/lykos-signing.keychain-db"
+            echo "ARCHIVE_PATH=$RUNNER_TEMP/Lykos.xcarchive"
+            echo "EXPORT_PATH=$RUNNER_TEMP/export"
+          } >> "$GITHUB_ENV"
+
+      - name: Select Xcode
+        run: |
+          sudo xcode-select -s "$XCODE_APP/Contents/Developer"
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate the Xcode project
+        run: xcodegen generate
+
+      # Secrets only ever reach the shell as environment variables and go to files or stdin,
+      # never to the log. No `set -x` here.
+      - name: Install the certificate and profile
+        env:
+          CERT_P12_BASE64: ${{ secrets.CERT_P12_BASE64 }}
+          CERT_PASSWORD: ${{ secrets.CERT_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+          PROFILE_APP_BASE64: ${{ secrets.PROFILE_APP_BASE64 }}
+        run: |
+          set -euo pipefail
+          cert="$RUNNER_TEMP/cert.p12"
+          profile="$RUNNER_TEMP/app.mobileprovision"
+          profile_plist="$RUNNER_TEMP/app-profile.plist"
+
+          printf '%s' "$CERT_P12_BASE64" | base64 --decode > "$cert"
+          printf '%s' "$PROFILE_APP_BASE64" | base64 --decode > "$profile"
+
+          # Temporary keychain, added to the search list for this run only.
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security import "$cert" -P "$CERT_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH" > /dev/null
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH" > /dev/null
+          security list-keychains -d user -s "$KEYCHAIN_PATH" $(security list-keychains -d user | tr -d '"')
+          rm -f "$cert"
+
+          identity="$(security find-identity -v -p codesigning "$KEYCHAIN_PATH" | awk 'NR==1 && $2 ~ /^[0-9A-F]{40}$/ {print $2}')"
+          if [ -z "$identity" ]; then
+            echo "::error::No code-signing identity in the imported certificate"
+            exit 1
+          fi
+
+          # Team ID and profile name come from the profile itself, so nothing is hard-coded.
+          security cms -D -i "$profile" > "$profile_plist"
+          uuid="$(/usr/libexec/PlistBuddy -c 'Print :UUID' "$profile_plist")"
+          name="$(/usr/libexec/PlistBuddy -c 'Print :Name' "$profile_plist")"
+          team="$(/usr/libexec/PlistBuddy -c 'Print :TeamIdentifier:0' "$profile_plist")"
+          expires="$(/usr/libexec/PlistBuddy -c 'Print :ExpirationDate' "$profile_plist")"
+          echo "Profile expires: $expires"
+
+          # The profile must be for the app's bundle ID (or a wildcard), or the IPA won't install.
+          app_id="$(/usr/libexec/PlistBuddy -c 'Print :Entitlements:application-identifier' "$profile_plist")"
+          case "$app_id" in
+            "$team.$LYKOS_BUNDLE_ID"|"$team.*") echo "Profile App ID: $app_id" ;;
+            *) echo "::error::The profile is for $app_id, not $team.$LYKOS_BUNDLE_ID. Create a profile for $LYKOS_BUNDLE_ID, or set the LYKOS_BUNDLE_ID repo variable to your own bundle ID."
+               exit 1 ;;
+          esac
+
+          # Export method follows the profile type: development, ad hoc or enterprise.
+          if [ "$(/usr/libexec/PlistBuddy -c 'Print :Entitlements:get-task-allow' "$profile_plist" 2>/dev/null)" = "true" ]; then
+            method="debugging"
+          elif [ "$(/usr/libexec/PlistBuddy -c 'Print :ProvisionsAllDevices' "$profile_plist" 2>/dev/null)" = "true" ]; then
+            method="enterprise"
+          else
+            method="release-testing"
+          fi
+          echo "Export method: $method"
+
+          # Xcode 16+ reads profiles from UserData; older tools from MobileDevice. Install to both.
+          for dir in "$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles" "$HOME/Library/MobileDevice/Provisioning Profiles"; do
+            mkdir -p "$dir"
+            cp "$profile" "$dir/$uuid.mobileprovision"
+          done
+          rm -f "$profile" "$profile_plist"
+
+          {
+            echo "SIGN_IDENTITY=$identity"
+            echo "SIGN_TEAM=$team"
+            echo "SIGN_PROFILE_NAME=$name"
+            echo "SIGN_PROFILE_UUID=$uuid"
+            echo "SIGN_EXPORT_METHOD=$method"
+          } >> "$GITHUB_ENV"
+
+      - name: Archive (manual signing)
+        run: |
+          set -o pipefail
+          # Phase 3 adds extension targets: they will need their own profile specifiers.
+          xcodebuild archive \
+            -project Lykos.xcodeproj \
+            -scheme Lykos \
+            -configuration Release \
+            -destination "generic/platform=iOS" \
+            -derivedDataPath "$DERIVED_DATA" \
+            -archivePath "$ARCHIVE_PATH" \
+            CODE_SIGN_STYLE=Manual \
+            DEVELOPMENT_TEAM="$SIGN_TEAM" \
+            CODE_SIGN_IDENTITY="$SIGN_IDENTITY" \
+            PROVISIONING_PROFILE_SPECIFIER="$SIGN_PROFILE_NAME" \
+            OTHER_CODE_SIGN_FLAGS="--keychain $KEYCHAIN_PATH" \
+            LYKOS_BUNDLE_ID="$LYKOS_BUNDLE_ID" \
+            CURRENT_PROJECT_VERSION=${{ github.run_number }}
+
+      - name: Export the signed IPA
+        run: |
+          set -o pipefail
+          options="$RUNNER_TEMP/ExportOptions.plist"
+          cp ExportOptions.plist "$options"
+          /usr/libexec/PlistBuddy \
+            -c "Set :method $SIGN_EXPORT_METHOD" \
+            -c "Set :teamID $SIGN_TEAM" \
+            -c "Set :signingCertificate $SIGN_IDENTITY" \
+            -c "Delete :provisioningProfiles" \
+            -c "Add :provisioningProfiles dict" \
+            -c "Add :provisioningProfiles:$LYKOS_BUNDLE_ID string \"$SIGN_PROFILE_NAME\"" \
+            "$options"
+          xcodebuild -exportArchive \
+            -archivePath "$ARCHIVE_PATH" \
+            -exportOptionsPlist "$options" \
+            -exportPath "$EXPORT_PATH"
+          mv "$EXPORT_PATH/Lykos.ipa" Lykos-signed.ipa
+          codesign -dv --verbose=2 "$ARCHIVE_PATH/Products/Applications/Lykos.app" 2>&1 | grep -E '^(Identifier|TeamIdentifier|Authority)=' || true
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: Lykos-signed-${{ github.run_number }}
+          path: Lykos-signed.ipa
+          retention-days: 7
+          if-no-files-found: error
+
+      - name: Delete the keychain and profile
+        if: always()
+        run: |
+          security delete-keychain "$KEYCHAIN_PATH" 2>/dev/null || true
+          if [ -n "${SIGN_PROFILE_UUID:-}" ]; then
+            rm -f "$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles/$SIGN_PROFILE_UUID.mobileprovision" \
+                  "$HOME/Library/MobileDevice/Provisioning Profiles/$SIGN_PROFILE_UUID.mobileprovision"
+          fi
+          rm -f "$RUNNER_TEMP/cert.p12" "$RUNNER_TEMP/app.mobileprovision" "$RUNNER_TEMP/app-profile.plist" "$RUNNER_TEMP/ExportOptions.plist"
+          rm -rf "$ARCHIVE_PATH"
+
+  # Tags only, public repo only: publish the unsigned IPA, the same build as a .tipa for
+  # TrollStore, and the AltStore / SideStore source. Never the signed IPA, which only installs
+  # on the devices in the owner's profile. The private twin repo receives the same tags and
+  # skips this job, so there is one Release, on the public repo.
+  release:
+    name: GitHub Release (tags only)
+    needs: unsigned
+    if: startsWith(github.ref, 'refs/tags/v') && !github.event.repository.private
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check the tag matches MARKETING_VERSION
+        run: |
+          version="$(sed -n 's/^[[:space:]]*MARKETING_VERSION:[[:space:]]*"\([^"]*\)".*/\1/p' project.yml | head -n 1)"
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME doesn't match MARKETING_VERSION $version in project.yml"
+            exit 1
+          fi
+          echo "Releasing $GITHUB_REF_NAME"
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: Lykos-unsigned-${{ github.run_number }}
+
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ipa="Lykos-$GITHUB_REF_NAME-unsigned.ipa"
+          tipa="Lykos-$GITHUB_REF_NAME.tipa"
+          mv Lykos-unsigned.ipa "$ipa"
+          cp "$ipa" "$tipa"   # same unsigned build; the .tipa extension opens straight in TrollStore
+          base="https://github.com/$GITHUB_REPOSITORY/releases"
+          source_url="$base/latest/download/altstore-source.json"
+
+          # Carry earlier versions over from the previous release's source, if there is one.
+          curl -fsSL "$source_url" -o previous-source.json || rm -f previous-source.json
+          python3 scripts/altstore_source.py \
+            --ipa "$ipa" \
+            --repo "$GITHUB_REPOSITORY" \
+            --tag "$GITHUB_REF_NAME" \
+            --download-url "$base/download/$GITHUB_REF_NAME/$ipa" \
+            --previous previous-source.json \
+            --out altstore-source.json
+
+          sha="$(sha256sum "$ipa" | cut -d' ' -f1)"
+          readme="https://github.com/$GITHUB_REPOSITORY#install"
+          changelog="https://github.com/$GITHUB_REPOSITORY/blob/$GITHUB_REF_NAME/CHANGELOG.md"
+          {
+            echo "Unofficial iOS app for Claude AI. Claude and all credit for it belong to Anthropic. Lykos is an independent project, not affiliated with or endorsed by Anthropic."
+            echo
+            echo "| File | For |"
+            echo "| --- | --- |"
+            echo "| \`$ipa\` | Sideloadly, AltStore, SideStore, or signing with your own developer certificate |"
+            echo "| \`$tipa\` | TrollStore (iOS 15.0 to 16.6.1, 16.7 RC and 17.0): a permanent install, no re-signing |"
+            echo "| \`altstore-source.json\` | Add \`$source_url\` as a source in AltStore or SideStore for one-tap installs and update alerts |"
+            echo
+            echo "Both app files are the same unsigned build. SHA-256: \`$sha\`"
+            echo
+            echo "Install steps: [README]($readme). What changed: [CHANGELOG.md]($changelog)"
+          } > notes.md
+          gh release create "$GITHUB_REF_NAME" "$ipa" "$tipa" altstore-source.json \
+            --verify-tag --latest --title "Lykos $GITHUB_REF_NAME" --notes-file notes.md

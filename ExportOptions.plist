@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Route A export settings. The signed CI job copies this file and fills in method,
+  teamID, signingCertificate and the profile name from the decoded provisioning profile
+  at build time (method: debugging for a development profile, release-testing for
+  ad hoc, enterprise for in-house), so nothing account-specific is committed here.
+-->
+<plist version="1.0">
+<dict>
+	<key>method</key>
+	<string>debugging</string>
+	<key>signingStyle</key>
+	<string>manual</string>
+	<key>teamID</key>
+	<string></string>
+	<key>signingCertificate</key>
+	<string></string>
+	<key>provisioningProfiles</key>
+	<dict>
+		<key>com.vullki.lykos</key>
+		<string></string>
+	</dict>
+	<key>compileBitcode</key>
+	<false/>
+	<key>stripSwiftSymbols</key>
+	<true/>
+	<key>thinning</key>
+	<string>&lt;none&gt;</string>
+</dict>
+</plist>

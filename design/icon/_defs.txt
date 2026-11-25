@@ -1,0 +1,6 @@
+Shared SVG defs used in concept-a/b/c.svg (copied inline in each file, since an SVG loaded as <img> can't reference another file).
+
+- bg: radial #0D0D0D -> #000 (Brushed Silver Noir rule 1: background #000, surfaces up to #0D0D0D)
+- silver: vertical gradient #DCDCDC 0% / #C2C2C2 30% / #808080 62% / #464646 100% (locked stops, designv2.md 3.1)
+- metal filter: horizontal brushed grain (anisotropic fractal noise) + specular bevel lit from the top left
+- glow: faint white ambient lift under the mark
