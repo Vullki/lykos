@@ -49,6 +49,12 @@ struct RootView: View {
             }
         }
         .background(Noir.background.ignoresSafeArea())
+        .onAppear {
+            // A new build drops the launch picture iOS cached from the old one (see LaunchSnapshot).
+            if let note = LaunchSnapshot.clearIfBuildChanged() {
+                DebugLog.shared.add(.native, note)
+            }
+        }
         .animation(.easeOut(duration: 0.35), value: store.launchFinished)
         .animation(.easeInOut(duration: 0.25), value: store.showOffline)
         .sheet(isPresented: $store.showDebugLog) {

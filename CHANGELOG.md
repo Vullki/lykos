@@ -2,6 +2,12 @@
 
 All notable changes to Lykos are recorded here, newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The app version is `MARKETING_VERSION` in `project.yml`; the build number is the GitHub Actions run number. Since 2026-11-25 there are twin repos with the same history: the public [`Vullki/lykos`](https://github.com/Vullki/lykos) (unsigned builds and Releases) and a private one that signs builds for the owner's phone. Each counts its own runs, so the same commit can carry different build numbers in each. Builds 1 to 13 below ran in the private repo (its pre-public history is kept there), so their run IDs and older commit hashes aren't linked; public builds are marked "public".
 
+## [Unreleased]
+
+### Fixed
+
+- Opening the app showed the old "Ly" for about two seconds, then faded to the new "LY". The old one was iOS's cached picture of the launch screen (`Library/SplashBoard`), kept from before the build 6 icon change; the app itself only carries the new mark. Lykos now deletes that cache once per new build, so iOS redraws it from the current build on the next launch. The first launch after installing still shows whatever iOS had cached; every launch after that shows only the new "LY". The debug log notes when it happened.
+
 ## [0.1.0] — 2026-11-25 — first public release
 
 The first public release, published 2026-11-25 at 03:25 (Bahrain): **[Lykos v0.1.0](https://github.com/Vullki/lykos/releases/tag/v0.1.0)**, from the open-source repo [`Vullki/lykos`](https://github.com/Vullki/lykos). The Release holds `Lykos-v0.1.0-unsigned.ipa` and `Lykos-v0.1.0.tipa` (the same build, 1,252,619 bytes, minimum iOS 15.0) and `altstore-source.json`. Same app as builds 6 to 8, now also for iOS 15 and 16.
