@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/hero.jpg" width="100%" alt="Lykos, ΛΥΚΟΣ: unofficial iOS app for Claude AI. A titanium iPhone shows the brushed-steel LY mark on black.">
+</p>
+
 # Lykos (ΛΥΚΟΣ)
 
 <p align="center">
@@ -135,7 +139,7 @@ App/                 the app target
   Resources/Assets.xcassets   AppIcon, LykosMark, LaunchBackground
 design/icon/         icon sources; final exports in design/icon/final/
 design/readme/       source for the README screenshot row (showcase.html)
-docs/screenshots/    README showcase and AltStore screenshots
+docs/                hero.jpg (README banner); screenshots/ for the README showcase and AltStore
 ```
 
 ## Status
