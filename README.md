@@ -1,5 +1,19 @@
 # Lykos (ΛΥΚΟΣ)
 
+<p align="center">
+  <a href="../../releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/Vullki/lykos?label=release&labelColor=111111&color=3a3a3a"></a>
+  <img alt="iOS 15+" src="https://img.shields.io/badge/iOS-15%2B-3a3a3a?logo=apple&logoColor=E6E4DF&labelColor=111111">
+  <img alt="Swift 5" src="https://img.shields.io/badge/Swift-5-3a3a3a?logo=swift&logoColor=E6E4DF&labelColor=111111">
+  <a href="../../actions/workflows/build.yml"><img alt="Build" src="https://img.shields.io/github/actions/workflow/status/Vullki/lykos/build.yml?branch=main&label=build&logo=githubactions&logoColor=E6E4DF&labelColor=111111&color=3a3a3a"></a>
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/github/license/Vullki/lykos?label=license&labelColor=111111&color=3a3a3a"></a>
+  <br>
+  <a href="../../releases/latest"><img alt="Download for iPhone" src="https://img.shields.io/badge/Download%20for%20iPhone-1c1c1c?logo=apple&logoColor=E6E4DF"></a>
+  <a href="#a-altstore-or-sidestore-source-one-tap-update-alerts"><img alt="AltStore" src="https://img.shields.io/badge/AltStore-1c1c1c"></a>
+  <a href="#a-altstore-or-sidestore-source-one-tap-update-alerts"><img alt="SideStore" src="https://img.shields.io/badge/SideStore-1c1c1c"></a>
+  <a href="#b-trollstore-ios-150-to-1661-167-rc-170"><img alt="TrollStore" src="https://img.shields.io/badge/TrollStore-1c1c1c"></a>
+  <a href="#c-sideloadly-or-another-tool-with-a-free-apple-id"><img alt="Sideloadly" src="https://img.shields.io/badge/Sideloadly-1c1c1c"></a>
+</p>
+
 **An unofficial iOS app for Claude AI.** Lykos opens claude.ai full screen in its own native iPhone shell: no browser bar, sign in once, and none of the startup code or App Store dependency of a store app.
 
 > **Credit where it belongs.** Claude, claude.ai and everything you use inside this app are made by [Anthropic](https://www.anthropic.com). All credit for Claude goes to them. Lykos is an independent, open-source project: it is not affiliated with, endorsed by or supported by Anthropic. "Claude" and "Anthropic" are trademarks of Anthropic, PBC. Lykos uses no Anthropic logos or artwork.
@@ -7,10 +21,7 @@
 Lykos (λύκος) is Greek for wolf. It is made by DARK at [Vullki](https://vullki.com) and released under the MIT license.
 
 <p align="center">
-  <img src="docs/screenshots/launch.jpg" width="200" alt="Lykos launch screen: the brushed-steel LY mark on black">
-  <img src="docs/screenshots/chat.jpg" width="200" alt="A new chat in Lykos, full screen">
-  <img src="docs/screenshots/sidebar.jpg" width="200" alt="The claude.ai sidebar inside Lykos">
-  <img src="docs/screenshots/code.jpg" width="200" alt="A Claude Code session inside Lykos">
+  <img src="docs/screenshots/showcase.png" width="100%" alt="Four Lykos screens side by side: the brushed-steel LY launch screen, a new chat, the claude.ai sidebar, and a Claude Code session">
 </p>
 
 ## Why it exists
@@ -123,7 +134,8 @@ App/                 the app target
   Screens/                    launch, offline and debug log screens, colours
   Resources/Assets.xcassets   AppIcon, LykosMark, LaunchBackground
 design/icon/         icon sources; final exports in design/icon/final/
-docs/screenshots/    README and AltStore screenshots
+design/readme/       source for the README screenshot row (showcase.html)
+docs/screenshots/    README showcase and AltStore screenshots
 ```
 
 ## Status
