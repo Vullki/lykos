@@ -2,6 +2,19 @@
 
 All notable changes to Lykos are recorded here, newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The app version is `MARKETING_VERSION` in `project.yml`; the build number is the GitHub Actions run number. Since 2026-11-25 there are twin repos with the same history: the public [`Vullki/lykos`](https://github.com/Vullki/lykos) (unsigned builds and Releases) and a private one that signs builds for the owner's phone. Each counts its own runs, so the same commit can carry different build numbers in each. Builds 1 to 13 below ran in the private repo (its pre-public history is kept there), so their run IDs and older commit hashes aren't linked; public builds are marked "public".
 
+## [Unreleased]
+
+No app code changed since 0.1.1; this is the project around it.
+
+### Added
+
+- **Product Hunt launch scheduled** (2026-11-26) for **Sunday 2026-11-29 at 00:00 Pacific** (11:00 Bahrain), at [producthunt.com/posts/lykos](https://www.producthunt.com/posts/lykos) (public from launch day). Tagline "Open-source, unofficial iPhone app for Claude AI"; free; open source; solo maker. Links: this repo and [vullki.com/tools/lykos](https://vullki.com/tools/lykos/). Tags iOS, Open Source, Artificial Intelligence and GitHub; category AI Chatbots. The maker's first comment (why Lykos exists, what it does, what's next, and that it's unofficial with all credit for Claude to Anthropic) posts and pins at launch.
+- `design/producthunt/`: the launch images at Product Hunt's 1270×760 gallery size (the four-screen showcase, the hero banner, chat and Code side by side) and a 240×240 thumbnail of the "LY" icon.
+
+### Changed
+
+- README (2026-11-25): the screenshots became one matched row with captions (`docs/screenshots/showcase.png`, source in `design/readme/showcase.html`), monochrome release / iOS / Swift / build / license badges and an install row (AltStore, SideStore, TrollStore, Sideloadly) were added ([`1965c3d`](https://github.com/Vullki/lykos/commit/1965c3d)), and a hero banner leads the page (`docs/hero.jpg`, [`5805b21`](https://github.com/Vullki/lykos/commit/5805b21)).
+
 ## [0.1.1] — 2026-11-25
 
 Released 2026-11-25 at 11:37 (Bahrain): **[Lykos v0.1.1](https://github.com/Vullki/lykos/releases/tag/v0.1.1)**, with `Lykos-v0.1.1-unsigned.ipa` and `Lykos-v0.1.1.tipa` (1,254,906 bytes each) and `altstore-source.json`, which now lists 0.1.1 and keeps 0.1.0. Checked after publishing: the `latest/download` AltStore source names 0.1.1, and its IPA matches the SHA-256 in the source.
