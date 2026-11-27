@@ -13,6 +13,7 @@ No app code changed since 0.1.1; this is the project around it.
 
 ### Changed
 
+- `Lykos — Project Idea.md` (2026-11-27): the overview and goals now describe the look as brushed silver / Brushed Silver Noir; the owner's personal identity is no longer named anywhere in the public repo's files.
 - README (2026-11-25): the screenshots became one matched row with captions (`docs/screenshots/showcase.png`, source in `design/readme/showcase.html`), monochrome release / iOS / Swift / build / license badges and an install row (AltStore, SideStore, TrollStore, Sideloadly) were added ([`1965c3d`](https://github.com/Vullki/lykos/commit/1965c3d)), and a hero banner leads the page (`docs/hero.jpg`, [`5805b21`](https://github.com/Vullki/lykos/commit/5805b21)).
 
 ## [0.1.1] — 2026-11-25
