@@ -13,8 +13,8 @@ No app code changed since 0.1.1; this is the project around it.
 
 ### Changed
 
-- `Lykos — Project Idea.md` (2026-11-27): the overview and goals now describe the look as brushed silver / Brushed Silver Noir; the owner's personal identity is no longer named anywhere in the public repo's files.
-- README (2026-11-25): the screenshots became one matched row with captions (`docs/screenshots/showcase.png`, source in `design/readme/showcase.html`), monochrome release / iOS / Swift / build / license badges and an install row (AltStore, SideStore, TrollStore, Sideloadly) were added ([`1965c3d`](https://github.com/Vullki/lykos/commit/1965c3d)), and a hero banner leads the page (`docs/hero.jpg`, [`5805b21`](https://github.com/Vullki/lykos/commit/5805b21)).
+- `Lykos — Project Idea.md` (2026-11-27): the overview and goals now describe the look as brushed silver / Brushed Silver Noir, and the public history was rewritten the same day so no earlier version of the file names the owner's personal identity either. Only that file's text changed; every other file, author, date and message is the same. All commits got new hashes (root `5872799` → `4336985`), tags `v0.1.0` (`0024df5`) and `v0.1.1` (`c9ad56e`) moved to the rewritten commits with their Releases and downloads unchanged, and the commit hashes in this file were updated to match. Build runs below were made on the old commits, whose code is identical.
+- README (2026-11-25): the screenshots became one matched row with captions (`docs/screenshots/showcase.png`, source in `design/readme/showcase.html`), monochrome release / iOS / Swift / build / license badges and an install row (AltStore, SideStore, TrollStore, Sideloadly) were added ([`fd31b85`](https://github.com/Vullki/lykos/commit/fd31b85)), and a hero banner leads the page (`docs/hero.jpg`, [`5b15bf6`](https://github.com/Vullki/lykos/commit/5b15bf6)).
 
 ## [0.1.1] — 2026-11-25
 
@@ -26,14 +26,14 @@ Two fixes found the morning after the first release. Build 15 (signed) was insta
 
 | Build | Run | Commit | What it was |
 | --- | --- | --- | --- |
-| 14 | 45572756752 | [`78173d2`](https://github.com/Vullki/lykos/commit/78173d2) | Launch-picture fix. Unsigned and signed green. Not installed |
-| public 3 | [45572751620](https://github.com/Vullki/lykos/actions/runs/45572751620) | [`78173d2`](https://github.com/Vullki/lykos/commit/78173d2) | Same commit in the public repo. Unsigned green |
-| 15 | 45576559615 | [`c4796d2`](https://github.com/Vullki/lykos/commit/c4796d2) | Code-tab mic fix. Unsigned and signed green, no warnings. Installed on the iPhone 17: both fixes confirmed |
-| public 4 | [45576554171](https://github.com/Vullki/lykos/actions/runs/45576554171) | [`c4796d2`](https://github.com/Vullki/lykos/commit/c4796d2) | Same commit in the public repo. Unsigned green |
-| 16 | 45577766421 | [`b133f2d`](https://github.com/Vullki/lykos/commit/b133f2d) | Version 0.1.1 on `main`. Unsigned and signed green |
-| public 5 | [45577762426](https://github.com/Vullki/lykos/actions/runs/45577762426) | [`b133f2d`](https://github.com/Vullki/lykos/commit/b133f2d) | Version 0.1.1 on `main`. Unsigned green |
-| public 6 | [45577780592](https://github.com/Vullki/lykos/actions/runs/45577780592) | [`b133f2d`](https://github.com/Vullki/lykos/commit/b133f2d) | Tag `v0.1.1`: built the unsigned IPA and published the Release |
-| 17 | 45577785193 | [`b133f2d`](https://github.com/Vullki/lykos/commit/b133f2d) | Tag `v0.1.1` on the private twin: signed green, release job skipped as intended |
+| 14 | 45572756752 | [`5bc7a9c`](https://github.com/Vullki/lykos/commit/5bc7a9c) | Launch-picture fix. Unsigned and signed green. Not installed |
+| public 3 | [45572751620](https://github.com/Vullki/lykos/actions/runs/45572751620) | [`5bc7a9c`](https://github.com/Vullki/lykos/commit/5bc7a9c) | Same commit in the public repo. Unsigned green |
+| 15 | 45576559615 | [`d796582`](https://github.com/Vullki/lykos/commit/d796582) | Code-tab mic fix. Unsigned and signed green, no warnings. Installed on the iPhone 17: both fixes confirmed |
+| public 4 | [45576554171](https://github.com/Vullki/lykos/actions/runs/45576554171) | [`d796582`](https://github.com/Vullki/lykos/commit/d796582) | Same commit in the public repo. Unsigned green |
+| 16 | 45577766421 | [`c9ad56e`](https://github.com/Vullki/lykos/commit/c9ad56e) | Version 0.1.1 on `main`. Unsigned and signed green |
+| public 5 | [45577762426](https://github.com/Vullki/lykos/actions/runs/45577762426) | [`c9ad56e`](https://github.com/Vullki/lykos/commit/c9ad56e) | Version 0.1.1 on `main`. Unsigned green |
+| public 6 | [45577780592](https://github.com/Vullki/lykos/actions/runs/45577780592) | [`c9ad56e`](https://github.com/Vullki/lykos/commit/c9ad56e) | Tag `v0.1.1`: built the unsigned IPA and published the Release |
+| 17 | 45577785193 | [`c9ad56e`](https://github.com/Vullki/lykos/commit/c9ad56e) | Tag `v0.1.1` on the private twin: signed green, release job skipped as intended |
 
 ### Fixed
 
@@ -56,10 +56,10 @@ Checked after publishing: the AltStore source loads from `releases/latest/downlo
 | 9 | 45515682618 | `4bd6232` | Minimum iOS lowered to 15: the compiler stopped on seven iOS 16-only calls in the debug log screen. Failed, as intended for this check |
 | 10 | 45515929585 | `cef33a4` | Debug log screen with iOS 15 fallbacks. Unsigned and signed green, no warnings; the IPA reports `MinimumOSVersion 15.0` and bundle ID `com.vullki.lykos`. Not installed on the phone |
 | 11 | 45516237150 | `ae72121` | Release prep (`.tipa`, AltStore source, screenshots) merged to `main`. Unsigned and signed green |
-| public 1 | [45517237468](https://github.com/Vullki/lykos/actions/runs/45517237468) | `5872799` | First build of the public repo, from its single clean root commit. Unsigned green; signed skipped (no secrets there, as intended) |
-| 12 | 45517398592 | `5872799` | Private twin after the rename, run by hand to prove signing still works. Unsigned and signed green |
-| public 2 | [45517771273](https://github.com/Vullki/lykos/actions/runs/45517771273) | `e987670` | Tag `v0.1.0`: built the unsigned IPA and published the Release (IPA, `.tipa`, AltStore source) |
-| 13 | 45517774205 | `e987670` | Tag `v0.1.0` on the private twin: signed IPA green, release job skipped, so there is only one Release |
+| public 1 | [45517237468](https://github.com/Vullki/lykos/actions/runs/45517237468) | `4336985` | First build of the public repo, from its single clean root commit. Unsigned green; signed skipped (no secrets there, as intended) |
+| 12 | 45517398592 | `4336985` | Private twin after the rename, run by hand to prove signing still works. Unsigned and signed green |
+| public 2 | [45517771273](https://github.com/Vullki/lykos/actions/runs/45517771273) | `0024df5` | Tag `v0.1.0`: built the unsigned IPA and published the Release (IPA, `.tipa`, AltStore source) |
+| 13 | 45517774205 | `0024df5` | Tag `v0.1.0` on the private twin: signed IPA green, release job skipped, so there is only one Release |
 
 ### Added — open source
 
@@ -74,8 +74,8 @@ Checked after publishing: the AltStore source loads from `releases/latest/downlo
 
 ### Changed
 
-- **Twin repos (2026-11-25).** The development repo became the private `Vullki/lykos-private`: it keeps the four signing secrets and the full pre-public history on branch `archive/pre-public`. The public `Vullki/lykos` starts from one clean commit (`5872799`) with the same 66 files, checked for personal details first. Both share the same `main`, and one `git push` updates both. The public repo never holds secrets, because anyone can download its workflow artifacts and a signed IPA carries the owner's profile.
-- The launch-screen screenshot added to the README and the AltStore source (`e987670`).
+- **Twin repos (2026-11-25).** The development repo became the private `Vullki/lykos-private`: it keeps the four signing secrets and the full pre-public history on branch `archive/pre-public`. The public `Vullki/lykos` starts from one clean commit (`4336985`) with the same 66 files, checked for personal details first. Both share the same `main`, and one `git push` updates both. The public repo never holds secrets, because anyone can download its workflow artifacts and a signed IPA carries the owner's profile.
+- The launch-screen screenshot added to the README and the AltStore source (`0024df5`).
 - Project Idea, Project Plan and `CLAUDE.md` reworded for a public repo: no more "personal use only, never distributed", no owner's legal name or Apple Team ID, and the design system is referenced without a local path.
 - **New app icon (2026-11-25): "LY" in brushed steel**, DARK's design, chosen over three vector candidates he also made. A bold italic L and Y in real brushed-steel grain, the L's top sweeping up into the Y's left arm, on a dark grained background. It replaces the satin-silver "Ly" (kept in `design/icon/archive-ly-v1/`). Any = his 1024 artwork as is (a full square; iOS applies the rounded mask); Dark and Tinted = the letters cut out onto transparency; `LykosMark` (launch and offline screens) = the same cut-out letters. Source (`design/icon/final/lykos-source.webp`) and the cut-out scripts (`design/icon/tools/`) are in the repo.
 - Checked on the phone (2026-11-25): in dark mode iOS shows the Dark variant on its own dark glass tile, with clean edges, and the letters read clearly at home-screen size. Kept at its current size inside the tile (a ~10% larger mark was offered and declined).
